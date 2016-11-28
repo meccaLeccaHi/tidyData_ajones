@@ -30,7 +30,6 @@ spam <- rbind(mergeDat_train,mergeDat_test)
 spam <- spam[,c(1,2,grep("\\bmean()\\b|\\bstd()\\b",features[,2])+2)]
 order(spam[,1])
 # get the average of each variable for each activity and each subject
-##### FIX TO MAINTAIN EACH ACTIVITY (RATHER THAN AVERAGE ACTIVITIES TOGETHER)
 foo <- aggregate(spam[, -(1:2)], 
                  list(Subject = spam$subject,
                       Activity = spam$activity),mean)
