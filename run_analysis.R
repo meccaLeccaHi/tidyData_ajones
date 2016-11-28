@@ -1,5 +1,3 @@
-setwd("E:/UCI HAR Dataset")
-
 # read variable labels
 activity_labels <- read.table("activity_labels.txt", quote="\"", comment.char="")
 features <- read.table("features.txt", quote="\"", comment.char="")
@@ -29,10 +27,13 @@ mergeDat_test <- cbind(subject,activity,X_test)
 # merge testing and training data together
 spam <- rbind(mergeDat_train,mergeDat_test)
 # reorder based on subject number
-spam <- spam[order(spam[,1]),c(1,2,grep("mean()|std()",features[,2])+2)]
-
+spam <- spam[,c(1,2,grep("\\bmean()\\b|\\bstd()\\b",features[,2])+2)]
+order(spam[,1])
 # get the average of each variable for each activity and each subject
-finished_result <- setNames(aggregate(spam[, -(1:2)], list(spam$subject), mean), colnames(spam[, -2]))
+##### FIX TO MAINTAIN EACH ACTIVITY (RATHER THAN AVERAGE ACTIVITIES TOGETHER)
+foo <- aggregate(spam[, -(1:2)], 
+                 list(Subject = spam$subject,
+                      Activity = spam$activity),mean)
+finished_result <- foo[order(foo[,1]),]
 
-
-
+write.table(finished_result, file = "tidyData_ajones.txt", row.names = FALSE, col.names = TRUE)
